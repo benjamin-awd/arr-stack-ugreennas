@@ -99,6 +99,33 @@ Skip the domain and access services directly via IP:port. All services work out 
 
 ---
 
+## ⚠️ CRITICAL: Ugreen NAS Port Conflict
+
+**Before deploying, you MUST reconfigure the Ugreen NAS web interface ports or you will lose access!**
+
+The Ugreen NAS web interface (nginx) uses ports 80/443 by default. Traefik also needs these ports. **They cannot coexist on the same ports.**
+
+**Solution**: Move nginx to ports 8080/8443 BEFORE deploying Traefik:
+
+```bash
+# SSH to NAS, then run:
+for file in /etc/nginx/ugreen*.conf; do
+  sudo sed -i 's/listen 80/listen 8080/g' "$file"
+  sudo sed -i 's/listen \[::\]:80/listen [::]:8080/g' "$file"
+  sudo sed -i 's/listen 443/listen 8443/g' "$file"
+  sudo sed -i 's/listen \[::\]:443/listen [::]:8443/g' "$file"
+done
+sudo systemctl restart nginx
+```
+
+After this, access NAS UI at `http://NAS_IP:8080` and proceed with Traefik deployment.
+
+> **Note**: UGOS may reset nginx ports after system updates. See [Troubleshooting](docs/TROUBLESHOOTING.md#nginx-ports-reset-after-reboot-or-update) for a persistent solution.
+
+See [README-UGREEN.md](docs/README-UGREEN.md#-critical-ugreen-nas-port-conflict) for detailed instructions.
+
+---
+
 ## Quick Start
 
 > The instructions below assume **Option A (with domain)**. For local-only, see above.
@@ -210,7 +237,10 @@ On the NAS, only operational files are deployed:
 ### Network Topology
 
 ```
-Internet → Port 80/443 → Traefik (Reverse Proxy)
+Internet → Router Port Forward (80→8080, 443→8443)
+                            │
+                            ▼
+           Traefik (listening on 8080/8443 on NAS)
                             │
                             ├─► Jellyfin, Jellyseerr, Bazarr (Direct)
                             │
@@ -218,6 +248,9 @@ Internet → Port 80/443 → Traefik (Reverse Proxy)
                                     │
                                     └─► qBittorrent, Sonarr, Radarr, Prowlarr
                                         (Privacy-protected services)
+
+Note: Ugreen NAS nginx uses 80/443, so Traefik uses 8080/8443.
+Router port forwarding maps external 80→8080, 443→8443.
 ```
 
 ### Three-File Architecture

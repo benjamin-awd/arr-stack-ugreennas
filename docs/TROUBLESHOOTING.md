@@ -5,6 +5,8 @@ Common issues and solutions for the media library management stack.
 ## Table of Contents
 
 - [Critical Issues](#critical-issues)
+  - [Lost Access to Ugreen NAS Web Interface](#lost-access-to-ugreen-nas-web-interface)
+  - [Nginx Ports Reset After Reboot or Update](#nginx-ports-reset-after-reboot-or-update)
 - [General Issues](#general-issues)
 - [Traefik Issues](#traefik-issues)
 - [VPN & Gluetun Issues](#vpn--gluetun-issues)
@@ -98,6 +100,101 @@ docker compose -f docker-compose.traefik.yml up -d
 
 **Prevention**:
 ⚠️ **NEVER** run `systemctl stop nginx` - always use `systemctl restart nginx` when making changes.
+
+---
+
+### Nginx Ports Reset After Reboot or Update
+
+**Symptoms**: After editing nginx config files and restarting nginx, the ports revert to 80/443
+
+**Cause**: UGOS (Ugreen OS) has a configuration management system that may regenerate or reset nginx configs during:
+- System reboots
+- UGOS updates
+- Certain system services restarts
+
+**Diagnosis**:
+```bash
+# Check if nginx is using the ports you configured
+sudo netstat -tlnp | grep nginx
+# Should show 8080 and 8443, NOT 80 and 443
+
+# Check if configs were reset
+grep -r "listen 80" /etc/nginx/ugreen*.conf
+# If this returns results, configs were reset
+```
+
+**Solutions** (in order of preference):
+
+#### Solution 1: Use Alternate Traefik Ports (Recommended)
+
+Instead of fighting nginx, configure Traefik to use non-conflicting ports:
+
+This is already done in `docker-compose.traefik.yml`:
+```yaml
+ports:
+  - "8080:80"   # Traefik HTTP on host port 8080
+  - "8443:443"  # Traefik HTTPS on host port 8443
+```
+
+Then configure router port forwarding:
+- External 80 → NAS:8080
+- External 443 → NAS:8443
+
+**This approach lets nginx keep 80/443, Traefik uses 8080/8443, and router translates.**
+
+#### Solution 2: Use Cloudflare Tunnel (Bypasses Port Issues Entirely)
+
+Cloudflare Tunnel connects outbound from your NAS to Cloudflare, so you don't need ANY port forwarding or nginx changes:
+
+See `docker-compose.cloudflared.yml` and [Cloudflare Tunnel Setup](CLOUDFLARE-TUNNEL-SETUP.md).
+
+#### Solution 3: Disable UGOS nginx (Advanced - May Break NAS UI)
+
+⚠️ **WARNING**: This may break the Ugreen NAS web interface.
+
+```bash
+# Disable nginx autostart (NAS UI will be unavailable until re-enabled)
+sudo systemctl disable nginx
+sudo systemctl stop nginx
+
+# Now Traefik can use ports 80/443 directly
+# Edit docker-compose.traefik.yml:
+ports:
+  - "80:80"
+  - "443:443"
+```
+
+To restore NAS UI access:
+```bash
+sudo systemctl enable nginx
+sudo systemctl start nginx
+```
+
+#### Solution 4: Create a Startup Script (Workaround)
+
+Create a script that runs after nginx to reconfigure ports:
+
+```bash
+# Create the script
+sudo cat > /usr/local/bin/fix-nginx-ports.sh << 'EOF'
+#!/bin/bash
+sleep 5  # Wait for nginx to fully start
+for file in /etc/nginx/ugreen*.conf; do
+  sed -i 's/listen 80/listen 8080/g' "$file"
+  sed -i 's/listen \[::\]:80/listen [::]:8080/g' "$file"
+  sed -i 's/listen 443/listen 8443/g' "$file"
+  sed -i 's/listen \[::\]:443/listen [::]:8443/g' "$file"
+done
+systemctl reload nginx
+EOF
+
+sudo chmod +x /usr/local/bin/fix-nginx-ports.sh
+
+# Add to crontab to run at boot
+(sudo crontab -l 2>/dev/null; echo "@reboot /usr/local/bin/fix-nginx-ports.sh") | sudo crontab -
+```
+
+**Note**: This is a workaround and may be fragile. Solution 1 or 2 is preferred.
 
 ---
 
