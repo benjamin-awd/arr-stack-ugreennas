@@ -245,7 +245,7 @@ nano .env
 **Required values**:
 - `DOMAIN`: Your domain (e.g., yourdomain.com)
 - `CF_DNS_API_TOKEN`: Cloudflare API token
-- `SURFSHARK_PRIVATE_KEY`: Surfshark WireGuard private key
+- `WIREGUARD_PRIVATE_KEY`: Surfshark WireGuard private key
 - `PIHOLE_UI_PASS`: Pi-hole admin password
 - `WG_PASSWORD_HASH`: WireGuard password hash
 - `TRAEFIK_DASHBOARD_AUTH`: Traefik dashboard auth
@@ -438,8 +438,8 @@ Your `.env` already has:
 
 8. **Add** to `.env`:
    ```bash
-   SURFSHARK_PRIVATE_KEY=your_private_key_here
-   SURFSHARK_WG_ADDRESS=10.14.0.2/16
+   WIREGUARD_PRIVATE_KEY=your_private_key_here
+   WIREGUARD_ADDRESS=10.14.0.2/16
    ```
 
 **Note**: We use WireGuard (not OpenVPN) because it's faster and more reliable with Gluetun. You MUST download the config file to get the Address field - it's not shown on the web interface.
@@ -1046,7 +1046,7 @@ See TROUBLESHOOTING.md → "IP Address Conflicts" for full IP allocation plan.
 1. Go to https://my.surfshark.com/ → VPN → Manual Setup → Router → WireGuard
 2. **Download** the full .conf file (don't just copy from web)
 3. Open .conf file and find `Address = 10.14.0.2/16` in [Interface] section
-4. Add to `.env`: `SURFSHARK_WG_ADDRESS=10.14.0.2/16`
+4. Add to `.env`: `WIREGUARD_ADDRESS=10.14.0.2/16`
 
 ### Q: Docker commands fail with "permission denied"?
 

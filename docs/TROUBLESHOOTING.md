@@ -458,7 +458,7 @@ docker logs gluetun -f
    #    Address = 10.14.0.2/16    ← This is what you need!
 
    # Add to .env:
-   SURFSHARK_WG_ADDRESS=10.14.0.2/16
+   WIREGUARD_ADDRESS=10.14.0.2/16
    ```
 
 2. **Check Surfshark WireGuard credentials**:

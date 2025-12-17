@@ -82,8 +82,8 @@ services:
       # Surfshark VPN Configuration (WireGuard)
       - VPN_SERVICE_PROVIDER=surfshark
       - VPN_TYPE=wireguard
-      - WIREGUARD_PRIVATE_KEY=${SURFSHARK_PRIVATE_KEY}
-      - WIREGUARD_ADDRESSES=${SURFSHARK_WG_ADDRESS}
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESS}
       - SERVER_COUNTRIES=${VPN_COUNTRIES:-United Kingdom}
       - TZ=Europe/London
       - DNS_ADDRESS=192.168.100.5

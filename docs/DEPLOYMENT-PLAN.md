@@ -141,8 +141,8 @@ cp .env.example .env
    - **Address** (from [Interface] section, e.g., 10.14.0.2/16)
 6. Add to `.env`:
    ```
-   SURFSHARK_PRIVATE_KEY=your_private_key_here
-   SURFSHARK_WG_ADDRESS=10.14.0.2/16
+   WIREGUARD_PRIVATE_KEY=your_private_key_here
+   WIREGUARD_ADDRESS=10.14.0.2/16
    ```
 **Note**: The Address field is NOT shown on the web interface - you MUST download the config file.
 
