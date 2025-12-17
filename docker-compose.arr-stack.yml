@@ -215,7 +215,7 @@ services:
     image: jellyfin/jellyfin
     container_name: jellyfin
     ports:
-      - "${NAS_IP_ADDRESS}:8096:8096"  # Local network access
+      - "8096:8096"  # Local network access
     environment:
       - TZ=Europe/London
     volumes:
