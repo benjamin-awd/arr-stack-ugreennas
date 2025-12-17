@@ -95,8 +95,15 @@ sudo mkdir -p /volume1/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr
 sudo mkdir -p /volume1/Media/{downloads,tv,movies}
 
 # Set permissions
+sudo chown -R 1000:1000 /volume2/docker/arr-stack/immich
 sudo chown -R 1000:1000 /volume1/docker/arr-stack
 sudo chown -R 1000:1000 /volume1/Media
+
+# Immich
+sudo mkdir -p /volume2/docker/arr-stack/immich/{thumbs,profile,backups,postgres}
+sudo mkdir -p /volume1/Media/immich
+sudo mkdir -p /volume1/Media/immich/encoded-video
+sudo chown -R 1000:1000 /volume1/Media/immich
 
 # Create acme.json for Traefik SSL certificates
 sudo touch /volume1/docker/arr-stack/traefik/acme.json
