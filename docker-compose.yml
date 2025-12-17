@@ -4,12 +4,6 @@ version: "3.8"
 # Centralized Volumes   #
 #########################
 volumes:
-  qbittorrent-config:
-  sonarr-config:
-  prowlarr-config:
-  radarr-config:
-  jellyfin-config:
-  jellyfin-cache:
   pihole-etc-pihole:
   pihole-etc-dnsmasq:
   wireguard-easy-config:
@@ -65,7 +59,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /volume1/docker/arr-stack/gluetun-config:/gluetun
+      - /volume2/docker/arr-stack/gluetun-config:/gluetun
     environment:
       - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
       - VPN_TYPE=wireguard
@@ -113,7 +107,7 @@ services:
       - WEBUI_PORT=8085
       - DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest
     volumes:
-      - qbittorrent-config:/config
+      - /volume2/docker/arr-stack/qbittorrent/config:/config
       - /volume1/Media/downloads:/downloads
       - /volume1/Media:/media
     labels:
@@ -141,7 +135,7 @@ services:
       - PGID=1000
       - TZ=Europe/London
     volumes:
-      - sonarr-config:/config
+      - /volume2/docker/arr-stack/sonarr/config:/config
       - /volume1/Media/tv:/tv
       - /volume1/Media/downloads:/downloads
     labels:
@@ -169,7 +163,7 @@ services:
       - PGID=1000
       - TZ=Europe/London
     volumes:
-      - prowlarr-config:/config
+      - /volume2/docker/arr-stack/prowlarr/config:/config
     labels:
       - deunhealth.restart.on.unhealthy=true
     restart: unless-stopped
@@ -195,7 +189,7 @@ services:
       - PGID=1000
       - TZ=Europe/London
     volumes:
-      - radarr-config:/config
+      - /volume2/docker/arr-stack/radarr/config:/config
       - /volume1/Media/movies:/movies
       - /volume1/Media/downloads:/downloads
     labels:
@@ -219,8 +213,8 @@ services:
     environment:
       - TZ=Europe/London
     volumes:
-      - jellyfin-config:/config
-      - jellyfin-cache:/cache
+      - /volume2/docker/arr-stack/jellyfin/config:/config
+      - /volume2/docker/arr-stack/jellyfin/cache:/cache
       - /volume1/Media/movies:/media/movies:ro
       - /volume1/Media/tv:/media/tv:ro
     networks:
@@ -335,7 +329,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-proxy"
     volumes:
-      - /volume1/docker/arr-stack/jellyseerr/config:/app/config
+      - /volume2/docker/arr-stack/jellyseerr/config:/app/config
     restart: unless-stopped
     logging: *default-logging
     healthcheck:
@@ -360,7 +354,7 @@ services:
       traefik-proxy:
         ipv4_address: 192.168.100.9
     volumes:
-      - /volume1/docker/arr-stack/bazarr/config:/config
+      - /volume2/docker/arr-stack/bazarr/config:/config
       - /volume1/Media/movies:/movies
       - /volume1/Media/tv:/tv
     labels:
@@ -410,7 +404,7 @@ services:
       traefik-proxy:
         ipv4_address: 192.168.100.13
     volumes:
-      - /volume1/docker/arr-stack/uptime-kuma:/app/data
+      - /volume2/docker/arr-stack/uptime-kuma:/app/data
       - /var/run/docker.sock:/var/run/docker.sock:ro  # For Docker container monitoring
     labels:
       # Routing handled by traefik/dynamic/vpn-services.yml (not Docker labels)
