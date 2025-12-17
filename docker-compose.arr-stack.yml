@@ -73,7 +73,7 @@ services:
       - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESS}
       - SERVER_COUNTRIES=${VPN_COUNTRIES:-United Kingdom}
       - TZ=Europe/London
-      - DNS_ADDRESS=192.168.100.5
+      - DNS_ADDRESS=1.1.1.1
       - FIREWALL_OUTBOUND_SUBNETS=192.168.0.0/24,192.168.100.0/24,10.8.1.0/24
     ports:
       # Ports for services using network_mode: "service:gluetun"
