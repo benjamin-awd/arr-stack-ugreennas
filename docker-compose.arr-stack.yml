@@ -214,7 +214,7 @@ services:
     image: jellyfin/jellyfin
     container_name: jellyfin
     ports:
-      - "192.168.0.136:8096:8096"  # Local network access
+      - "${NAS_IP_ADDRESS}:8096:8096"  # Local network access
     environment:
       - TZ=Europe/London
     volumes:
@@ -244,8 +244,8 @@ services:
     image: pihole/pihole:latest
     container_name: pihole
     ports:
-      - "192.168.0.136:53:53/tcp"  # Bind to NAS IP to avoid conflict with localhost dnsmasq
-      - "192.168.0.136:53:53/udp"
+      - "${NAS_IP_ADDRESS}:53:53/tcp"  # Bind to NAS IP to avoid conflict with localhost dnsmasq
+      - "${NAS_IP_ADDRESS}:53:53/udp"
     networks:
       traefik-proxy:
         ipv4_address: 192.168.100.5
@@ -321,7 +321,7 @@ services:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
     ports:
-      - "192.168.0.136:5055:5055"  # Local network access
+      - "${NAS_IP_ADDRESS}:5055:5055"  # Local network access
     environment:
       - LOG_LEVEL=info
       - TZ=Europe/London

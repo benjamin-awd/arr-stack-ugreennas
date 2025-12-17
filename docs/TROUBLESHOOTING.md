@@ -923,7 +923,7 @@ hosts = ["192.168.0.141 homeassistant.lan", "192.168.0.100 server.lan"]
 docker restart pihole
 
 # 3. Verify
-dig @192.168.0.136 homeassistant.lan +short
+dig @${NAS_IP_ADDRESS} homeassistant.lan +short
 # Should return: 192.168.0.141
 ```
 
