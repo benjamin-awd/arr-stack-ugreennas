@@ -82,10 +82,11 @@ services:
       - "7878:7878"   # Radarr
       - "9696:9696"   # Prowlarr
       - "8085:8085"   # qBittorrent
-    networks:
-      traefik-proxy:
-        ipv4_address: 192.168.100.3
-      vpn-net:
+    network_mode: bridge
+    # networks:
+    #   traefik-proxy:
+    #     ipv4_address: 192.168.100.3
+    #   vpn-net:
     restart: unless-stopped
     logging: *default-logging
     healthcheck:
