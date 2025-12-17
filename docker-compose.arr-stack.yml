@@ -322,7 +322,7 @@ services:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
     ports:
-      - "${NAS_IP_ADDRESS}:5055:5055"  # Local network access
+      - "5055:5055"  # Local network access
     environment:
       - LOG_LEVEL=info
       - TZ=Europe/London
