@@ -94,6 +94,7 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
+      start_period: 30s  # Give VPN time to establish connection
 
   #############################################
   # Download Client (qBittorrent via VPN)    #
