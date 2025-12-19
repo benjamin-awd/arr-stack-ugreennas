@@ -389,6 +389,8 @@ services:
       interval: 3m
       timeout: 10s
       retries: 2
+    ports:
+      - "8191:8191"
 
   #############################################
   # Monitoring (Uptime Kuma)                 #
