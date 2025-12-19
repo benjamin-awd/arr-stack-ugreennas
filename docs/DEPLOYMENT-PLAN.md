@@ -105,6 +105,9 @@ sudo mkdir -p /volume1/Media/immich
 sudo mkdir -p /volume1/Media/immich/encoded-video
 sudo chown -R 1000:1000 /volume1/Media/immich
 
+# Uptime Kuma
+sudo chown -R 1000:1000 /volume2/docker/arr-stack/uptime-kuma
+
 # Create acme.json for Traefik SSL certificates
 sudo touch /volume1/docker/arr-stack/traefik/acme.json
 sudo chmod 600 /volume1/docker/arr-stack/traefik/acme.json
