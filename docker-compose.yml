@@ -242,6 +242,7 @@ services:
     ports:
       - "${NAS_IP_ADDRESS}:53:53/tcp"  # Bind to NAS IP to avoid conflict with localhost dnsmasq
       - "${NAS_IP_ADDRESS}:53:53/udp"
+      - "8080:80"       # Pi-hole Web UI
     networks:
       traefik-proxy:
         ipv4_address: 192.168.100.5
