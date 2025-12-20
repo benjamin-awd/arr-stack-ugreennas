@@ -77,6 +77,7 @@ services:
       - "7878:7878"   # Radarr
       - "9696:9696"   # Prowlarr
       - "8085:8085"   # qBittorrent
+      - "8191:8191"   # Byparr/FlareSolverr
     network_mode: bridge
     # networks:
     #   traefik-proxy:
@@ -378,12 +379,15 @@ services:
   flaresolverr:
     image: ghcr.io/thephaseless/byparr:latest
     container_name: flaresolverr
+    network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
     environment:
       - LOG_LEVEL=info
       - TZ=Europe/London
-    networks:
-      traefik-proxy:
-        ipv4_address: 192.168.100.10
+    labels:
+      - deunhealth.restart.on.unhealthy=true
     restart: unless-stopped
     logging: *default-logging
     healthcheck:
@@ -391,8 +395,6 @@ services:
       interval: 3m
       timeout: 10s
       retries: 2
-    ports:
-      - "8191:8191"
 
   #############################################
   # Monitoring (Uptime Kuma)                 #
