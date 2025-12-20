@@ -49,7 +49,7 @@ services:
   # VPN Gateway (Gluetun with Surfshark)    #
   #############################################
   gluetun:
-    image: qmcgaw/gluetun
+    image: qmcgaw/gluetun:v3.39.0
     container_name: gluetun
     cap_add:
       - NET_ADMIN
@@ -60,12 +60,13 @@ services:
     volumes:
       - /volume2/docker/arr-stack/gluetun-config:/gluetun
     environment:
-      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+      - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
       - VPN_PORT_FORWARDING=on
+      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c 'wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}}}" http://127.0.0.1:8085/api/v2/app/setPreferences 2>&1'
       - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
       - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESS}
-      - SERVER_COUNTRIES=${VPN_COUNTRIES:-United Kingdom}
+      - SERVER_COUNTRIES=${VPN_COUNTRIES:-Singapore}
       - TZ=Europe/London
       - DNS_ADDRESS=1.1.1.1
       - FIREWALL_OUTBOUND_SUBNETS=192.168.0.0/24,192.168.100.0/24
