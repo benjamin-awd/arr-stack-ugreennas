@@ -241,8 +241,8 @@ services:
     image: pihole/pihole:2025.11.1
     container_name: pihole
     ports:
-      - "${NAS_IP_ADDRESS}:53:53/tcp"  # Bind to NAS IP to avoid conflict with localhost dnsmasq
-      - "${NAS_IP_ADDRESS}:53:53/udp"
+      - "5380:53/tcp"  # Use different port to avoid conflict with localhost dnsmasq
+      - "5380:53/udp"
       - "8080:80"       # Pi-hole Web UI
     networks:
       traefik-proxy:
