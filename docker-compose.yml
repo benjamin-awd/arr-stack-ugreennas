@@ -530,7 +530,7 @@ services:
   #############################################
   upsnap:
     container_name: upsnap
-    image: ghcr.io/seriousm4x/upsnap:4
+    image: ghcr.io/seriousm4x/upsnap:5
     volumes:
       - /volume2/docker/arr-stack/upsnap:/app/pb_data
     network_mode: host
